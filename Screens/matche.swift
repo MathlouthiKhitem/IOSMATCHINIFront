@@ -237,9 +237,9 @@ struct Home : View {
                 }
             
                 .toolbar {
-
+                   
                     ToolbarItemGroup(placement: .bottomBar) {
-                        HStack (spacing: 40){
+                        HStack (spacing: 70){
                             Button(action: {
                                 self.isProfileViewActive = true
                                 navigationSelection = login
@@ -248,18 +248,19 @@ struct Home : View {
                                 Image(systemName: "person")
                                     .bold()
                                     .font(.system(size: 25))
+                                    
+                                    
                                 
                             }
-                            Divider()
+                            
                             Button(action: {
                                 // self.isProfileViewActive = true
                             }) {
                                 Image(systemName: "house")
                                     .bold()
                                     .font(.system(size: 25))
-                                
                             }
-                            Divider()
+                           
                             Button(action: {
                                 self.isFrinedViewActive = true
                            
@@ -269,13 +270,23 @@ struct Home : View {
                                     .bold()
                                     .font(.system(size: 25))
                                 
+                                
                             }
                           
                         }
+                        .padding(.horizontal, 20)
+//                        .background(Color.white)
+//                        .shadow(radius: 20)
+//                            .opacity(1)
+//                            .cornerRadius(50)
+//                            .frame(width: 80, height: 50)
+                        
                     }
 
                 }
                 .padding(.horizontal, 20)
+                
+            
 
                 .sheet(isPresented: $isProfileViewActive) {
                     Profile(login:login)
@@ -285,17 +296,13 @@ struct Home : View {
                 }
                
                    
-                .background(NavigationLink(destination: FriendsList(login: login), isActive: $isFrinedViewActive) { EmptyView() })
-                   
+                .background(NavigationLink(destination: FriendsList(login: login, selectedTab: Tab.friends, tokenout: ""), isActive: $isFrinedViewActive) { EmptyView() })
+
                
-        }
+        }.navigationBarBackButtonHidden(true)
         
                     .accentColor(Color.white)
-                    .background(Color.white)
-                  
-
-
-
+                   // .background(Color.green)
     }
     
     
@@ -330,7 +337,11 @@ struct CardView : View {
             URLImage(URL(string: data.Image)!) { image in
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    //.aspectRatio(contentMode: .fit)
+                    .shadow(radius:20)
+                    .cornerRadius(50)
+                    .frame(width: 500, height: 700)
+                    
                     .overlay(
                                        ZStack {
                                            if isShowingHeart {
@@ -376,14 +387,22 @@ struct CardView : View {
             .frame(width: 500, height: 500)
             HStack {
                 Text(data.FirstName)
-                    .fontWeight(.bold)
-                    .padding(.leading)
-                    .padding(.horizontal, 100)
+                    .fontWeight(.semibold)
+                    //.padding(.leading)
+                    .padding(.horizontal, 90)
+                    .foregroundColor(Color.white)
+                    .font(.system(size: 25))
+          
+                    
+                
                 Spacer()
 
                 Text(String(data.Age))
-                    .fontWeight(.bold)
-                    .padding(.trailing)
+                    .fontWeight(.semibold)
+                    // .padding(.trailing)
+                    .foregroundColor(Color.white)
+                    .padding(.horizontal, -140)
+                    .font(.system(size: 20))
                   
             }
 
@@ -395,6 +414,7 @@ struct CardView : View {
         .background(Color.white)
         .cornerRadius(25)
         .padding(.top,40)
+       
 
     }
     

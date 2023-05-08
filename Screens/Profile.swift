@@ -82,7 +82,7 @@ struct Profile1: View {
                     }) {
                         Image(systemName: "person")
                         Text("Edit Profile")
-                    }.accentColor(.gray)
+                    }.accentColor(.red)
                         .background(Color.white)
                         .padding(.trailing)
                     .sheet(isPresented: $isProfileViewActive1) {
@@ -106,7 +106,7 @@ struct Profile1: View {
                         Text("Log Out")
                        
                         
-                    } .accentColor(.gray)
+                    } .accentColor(.red)
                         .background(Color.white)
                         .padding(.trailing)
                         .sheet(isPresented: $isProfileViewActive) {
@@ -119,8 +119,11 @@ struct Profile1: View {
                   
                     
                 }
-            } .accentColor(Color.gray)
-                .background(Color.white)
+            } .accentColor(Color.red)
+                .background(Color.red)
+            
+                
+                
         }
     }
 

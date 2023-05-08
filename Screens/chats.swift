@@ -8,11 +8,13 @@
 import SwiftUI
 
 
-
 struct chats: View {
-    let romeName  : String = ""
+    let romeName  : String 
     @State var message : String = ""
+           
     var body: some View {
+//        Text("romeName: \(romeName)")
+        
         VStack {
             HStack {
                 Image("left_arrow")
@@ -24,14 +26,19 @@ struct chats: View {
                 CircleImageView(image: Image("user"))
                     .frame(width: 70, height: 69)
                     .padding(.leading, 10)
-                    .padding(.top, 10)
-                    .padding(.bottom, 10)
-                VStack(alignment: .leading, spacing: 7) {
-                    Text("username")
+                    
+                    .padding(.top, -40)
+                    .padding(.horizontal, -40)
+                VStack( spacing: 7) {
+                    Text("UserName")
+                        .frame(width: 160, height: nil)
+                       // .padding(.leading, 8)
+                        .padding(.top, -20)
+                        .padding(.horizontal, 10)
+                       
+                    
+                    
                         
-                        .frame(width: 160, height: nil, alignment: .leading)
-                        .padding(.leading, 8)
-                        .padding(.top, 10)
                     Text("Typing........")
                         .font(.system(size: 12))
                         .frame(width: nil, height: nil, alignment: .leading)
@@ -45,7 +52,7 @@ struct chats: View {
             }
             .padding(.top, 24)
             
-            RecyclerView()
+       
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
             
             HStack {
@@ -96,15 +103,9 @@ struct CustomShape: Shape {
 }
 
 
-struct RecyclerView: View {
-    var body: some View {
-        Color.clear // Replace with your own implementation of RecyclerView
-    }
-}
-
 
 struct chats_Previews: PreviewProvider {
     static var previews: some View {
-        chats()
+        chats(romeName: "")
     }
 }
