@@ -7,9 +7,10 @@
 import SwiftUI
 import URLImage
 import Foundation
-import WebKit
 
 
+
+import SocketIO
 
 
 
@@ -21,24 +22,21 @@ enum Tab {
 
 
 struct FriendsList: View {
+    @State private var showNextView = false
+
 //    @State private var selectedTab: Tab = .friends
     @State private var selectedTab: Tab
     @State private var friends: [Friend] = []
     @State private var messages: [Friend] = []
    @State private var settings: [Friend] = []
     let login: String
-    @State var token: String = ""
     @State private var selection = false
     @State private var validPaiement = false
     @State var data = [Friend]()
     @State var data1 = [Friend]()
     @State var data2 = [Friend]()
-    @State var tokenout: String = ""
-  
+    let defaults = UserDefaults.standard
 
-    let apiUrl = "https://sandbox.paymee.tn/api/v2/payments/create"
-
-    let apiKey = "8cb752ab1b41f36363c73d5d7205f8175d3e21bd"
 
     @State var amount: Double = 220.25
     @State var note: String = "Order #123"
@@ -135,147 +133,10 @@ struct FriendsList: View {
 
         task.resume()
     }
-    func pay() {
-        // Step 1: Prepare the URL request
-        let url = URL(string: "https://sandbox.paymee.tn/api/v2/payments/create")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-
-        // Step 2: Set the headers and body of the request
-        let apiToken = "8cb752ab1b41f36363c73d5d7205f8175d3e21bd"
-        request.setValue("Token \(apiToken)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let body = [
-            "amount": 20.00,
-            "note": "Order #123",
-            "first_name": "John",
-            "last_name": "Doe",
-            "email": login,
-            "phone": "+21611222333",
-            "return_url": "https://www.return_url.tn",
-            "cancel_url": "https://www.cancel_url.tn",
-            "webhook_url": "https://www.webhook_url.tn",
-            "order_id": "244557"
-        ] as [String : Any]
-
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-
-        // Step 3: Send the request and handle the response
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let data = data,
-               let response = response as? HTTPURLResponse,
-               response.statusCode == 200 {
-
-                if let response = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let data = response["data"] as? [String: Any],
-                   let token = data["token"] as? String {
-                    self.tokenout = token
-                    print("pppppppppp",tokenout)
-                    
-                }
-             
-                else {
-                    print("Error: Failed to parse JSON response")
-                }
-            } else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-            }
-            
-           
-        }.resume()
-    
 
 
-//        //**** Step 3 ****
-//        let checkUrl = URL(string: "https://sandbox.paymee.tn/api/v1/payments/\(token)/check")!
-//        var checkRequest = URLRequest(url: checkUrl)
-//        checkRequest.httpMethod = "GET"
-//        checkRequest.setValue("Token \(apiToken)", forHTTPHeaderField: "Authorization")
-//        checkRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        URLSession.shared.dataTask(with: checkRequest) { (data, response, error) in
-//            if let data = data,
-//               let response = response as? HTTPURLResponse,
-//               response.statusCode == 200 {
-//               let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-//                if let data = json?["data"] as? [String: Any], let paymentStatus = data["payment_status"] as? Bool {
-//                    if paymentStatus {
-//                        print("paymentStatuspaymentStatuspaymentStatus",paymentStatus)
-//                    } else {
-//                        ("]]]]]]]]",paymentStatus)
-//                    }
-//                }
-//print ("[[[[[[",data)
-//            } else {
-//                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-//            }
-//        }.resume()
-        
 
-    }
-    func checkPayment(token: String) {
-        
-        
-        
-        let url = URL(string: "https://sandbox.paymee.tn/api/v1/payments/\(token)/check")!
-        print("tokeneniii",token);
-        var request = URLRequest(url: url)
-        
-        request.httpMethod = "GET"
-        
-        //request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let apiToken = "8cb752ab1b41f36363c73d5d7205f8175d3e21bd"
-        
-        request.setValue("Token \(apiToken)", forHTTPHeaderField: "Authorization")
-        
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        
-        
-        let session = URLSession.shared
-        
-        let task = session.dataTask(with: request) { data, response, error in
-            
-            guard let data = data, error == nil else {
-                
-                print("error")
-                
-                return
-                
-            }
-            
-            
-            
-            if let httpResponse = response as? HTTPURLResponse {
-                
-                print("HTTP status code: \(httpResponse.statusCode)")
-                
-            }
-            
-            
-            
-            do {
-                
-                let decoder = JSONDecoder()
-                
-         
-                
-            } catch let error {
-                
-                print(error.localizedDescription)
-                
-            }
-            
-            
-            
-        }
-        
-        
-        
-        task.resume()
-        
-    }
+
     func getYourMatches(userId: String) {
         let url = URL(string: "http://localhost:9090/matche/notamie/\(userId)")!
         var request = URLRequest(url: url)
@@ -382,10 +243,10 @@ struct FriendsList: View {
 
 
     @Environment(\.presentationMode) var presentationMode
-    init(login: String, selectedTab: Tab,tokenout: String ) {
+    init(login: String, selectedTab: Tab ) {
           self.login = login
           _selectedTab = State(initialValue: selectedTab)
-        self.tokenout = tokenout
+       
       }
     
     var body: some View {
@@ -436,41 +297,50 @@ struct FriendsList: View {
                         Spacer()
                        
                         ForEach(data1) { friend in
-                            
-                                YourMatchesRow(login: login, data1: friend)
-                            
-                            Spacer()
-                        }
+                            NavigationLink(destination: matchinii.login()) {
+
+                                      YourMatchesRow(login: login, data1: friend)
+                                  }
+                                  Spacer()
+                              }
+                        
                         .listStyle(PlainListStyle())
                         .background(Color.clear)
 
                       
                     }
-                    Button(action: {
-                 
-                    }, label: {
-//                        NavigationLink(destination: CheckoutView()) {
-//                            Text("Payer \(amount) TND")
-//                                .foregroundColor(.white)
-//                                .padding()
-//                                .background(Color.red)
-//                                .cornerRadius(10)
-//
-//                        }
-                        NavigationLink(destination: paiement(tokenout: tokenout)) {
-                            Text("Payer \(amount) TND")
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.red)
-                                .cornerRadius(10)
+                    if (defaults.object(forKey: "paid") != nil) != true {
+                        Button(action: {
+                            
+                        }, label: {
+                            NavigationLink(destination: CheckoutViewControllerWrapper(login : login)) {
+                                Text("Payer \(amount) TND")
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.red)
+                                    .cornerRadius(10)
+                                
+                            }
+                            
+                        })
+                    }else {
+                        VStack {
+                            Spacer()
+                            ForEach(data1) { friend in
+                        
+                                          YourMatchesRow(login: login, data1: friend)
 
+                                     
+                                  }                            .listStyle(PlainListStyle())
+                            .background(Color.clear)
                         }
-                            })
+                        
+                    }
                 case .settings:
                     VStack {
                         Spacer()
                         ForEach(data2) { friend in
-                            
+
                             TOPMatchesRow(login: login, data2: friend)
                             Spacer()
                         }
@@ -501,7 +371,7 @@ struct FriendsList: View {
                     getFriendList(userId: userId)
                     getYourMatches(userId: userId)
                     getTopmatches(userId: userId)
-                   pay()
+                
                   //  createPayment()
                     
                 }
@@ -519,7 +389,7 @@ struct FriendsList: View {
 struct FriendsList_Previews: PreviewProvider {
     static var previews: some View {
         
-        FriendsList(login: "", selectedTab: Tab.messages, tokenout: "")
+        FriendsList(login: "", selectedTab: Tab.messages)
     }
 }
 func getRomeName(user1: String, user2: String, completion: @escaping (String?, Error?) -> Void) {
@@ -580,35 +450,6 @@ func getUserId1(login : String , completion: @escaping (String?, Error?) -> Void
        
     }.resume()
 }
-//struct WebView: UIViewRepresentable {
-//    let request: URLRequest
-//    let tokenout: String
-//
-//    func makeUIView(context: Context) -> WKWebView {
-//        let webView = WKWebView()
-//        return webView
-//    }
-//
-//    func updateUIView(_ webView: WKWebView, context: Context) {
-//        webView.load(request)
-//        print("asssssssssssssssssssssslemsa")
-//        
-//    }
-//}
-//struct PaymentView: View {
-//    let tokenout: String
-//    var paymeeURL: URL {
-//        URL(string: "https://sandbox.paymee.tn/gateway/\(tokenout)/?paymee")!
-//    }
-//    var request: URLRequest {
-//        URLRequest(url: paymeeURL)
-//    }
-//
-//    var body: some View {
-//        WebView(request: request, tokenout: tokenout)
-//    }
-//}
-
 struct ContactRow: View {
     
     @State private var navigationLinkIsActive = false
@@ -644,11 +485,6 @@ struct ContactRow: View {
                                        }}
                                
                             }
-                           
-                            // Dismiss the current sheet if any
-                          
-                      
-                        // Navigate to chats screen
                     navigationLinkIsActive = true
                     }) {
                         URLImage(URL(string: data.Image)!) { image in
@@ -672,19 +508,9 @@ struct ContactRow: View {
                                 .foregroundColor(.red)
                         }
                     }
-                   
-//                    VStack {
-//                        Spacer()
-//
-//                        VStack(alignment: .leading) {
-//                            Text(data.LasteName)
-//                                .font(.system(size: 10, weight: .medium, design: .default))
-//
-//                        }
-//                    }
                 }.padding(.horizontal , -170)
             }
-        }.background(NavigationLink(destination: chats(romeName:romeName), isActive: $navigationLinkIsActive) { EmptyView() })
+        }.background(NavigationLink(destination: chats( romeName:romeName, userName:"khitem"), isActive: $navigationLinkIsActive) { EmptyView() })
            
         }
     }
@@ -700,10 +526,8 @@ struct YourMatchesRow: View {
         NavigationView {
             VStack {
                 Spacer()
-                
                 HStack {
-               
-                     
+              
                         URLImage(URL(string: data1.Image)!) { image in
                             image
                                 .resizable()
@@ -713,6 +537,8 @@ struct YourMatchesRow: View {
                                 .cornerRadius(50)
                         }
                     
+                    Spacer()
+                
                    
                     
                     ZStack {
@@ -727,21 +553,14 @@ struct YourMatchesRow: View {
                         }
                     }
                    
-//                    VStack {
-//                        Spacer()
-//
-//                        VStack(alignment: .leading) {
-//                            Text(data.LasteName)
-//                                .font(.system(size: 10, weight: .medium, design: .default))
-//
-//                        }
-//                    }
+
                 }.padding(.horizontal , -170)
             }
         }
            
         }
     }
+
 struct TOPMatchesRow: View {
     
     @State private var navigationLinkIsActive = false
@@ -803,15 +622,12 @@ struct Friend:  Identifiable, Codable  {
     let LasteName: String
 }
 
-struct PaymentData: Encodable {
-    let amount: Double
-    let note: String
-    let firstName: String
-    let lastName: String
-    let email: String
-    let phone: String
-    let returnUrl: String
-    let cancelUrl: String
-    let webhookUrl: String
-    let orderId: String
-}
+     
+
+    
+
+
+
+
+
+

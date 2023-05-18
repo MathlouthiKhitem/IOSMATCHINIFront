@@ -296,7 +296,7 @@ struct Home : View {
                 }
                
                    
-                .background(NavigationLink(destination: FriendsList(login: login, selectedTab: Tab.friends, tokenout: ""), isActive: $isFrinedViewActive) { EmptyView() })
+                .background(NavigationLink(destination: FriendsList(login: login, selectedTab: Tab.friends), isActive: $isFrinedViewActive) { EmptyView() })
 
                
         }.navigationBarBackButtonHidden(true)

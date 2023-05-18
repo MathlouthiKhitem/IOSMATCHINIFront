@@ -6,16 +6,75 @@
 //
 
 import SwiftUI
+import SocketIO
 
 
 struct chats: View {
-    let romeName  : String 
+   let romeName  : String
+
     @State var message : String = ""
-           
+    @State var  userName :String
+   // @State var romeName: String = ""
+   // var roomName = romeName;
+    func connectToSocket() {
+
+
+                   let manager = SocketManager(socketURL: URL(string: "ws://127.0.0.1:3000")!)
+                   let socket = manager.defaultSocket
+//        print("====;;;;;;;===",romeName)
+//
+//
+//
+//                       socket.emit("subscribe", with: [romeName]){
+//                           print("Username: \(userName) joined Room Name: \(romeName)")
+//                       }
+//
+//                       socket.emit("subscribe", with: [userName])
+//                       {
+//                           print("Username: \(userName) joined Room Name: \(romeName)")
+//                       }
+//                       print ("---------------------",userName)
+//        print ("---------romeName------------",romeName)
+//        socket.on("subscribe") { data, ack in
+//            guard let roomData = data.first as? [String: Any],
+//                  let romeName = roomData["roomName"] as? String,
+//                  let userName = roomData["userName"] as? String else {
+//                return
+//            }
+//
+//                   }
+        socket.on(clientEvent: .connect) {_, _ in
+                    socket.emit("subscribe", ["roomName": self.romeName, "userName": "khitem"])
+                    socket.on("subscribe") { data, ack in
+                        print(data)
+                    }
+                }
+        socket.on("newMessage") { data, _ in
+            if let messageData = data.first as? [String: Any],
+               let messageContent = messageData["messageContent"] as? String,
+               let roomName = messageData["roomName"] as? String {
+                let chatData: [String: Any] = [
+                    "userName": self.userName,
+                    "messageContent": self.message,
+                    "roomName": roomName
+                ]
+                
+                print("[Room Number \(roomName)] \(self.userName) : \(messageContent)")
+                socket.emit("updateChat", with: [chatData], completion: nil)
+            }
+        }
+                   
+                   socket.connect()
+        
+               }
     var body: some View {
-//        Text("romeName: \(romeName)")
+      Text("romeName: \(romeName)")
+      
+     
+        
         
         VStack {
+            
             HStack {
                 Image("left_arrow")
                     .resizable()
@@ -66,17 +125,34 @@ struct chats: View {
                     .foregroundColor(.black)
                     .background(Color(red: 0.94, green: 0.393, blue: 0.408).opacity(0.5))
                     .cornerRadius(50)
-                
-                
-                Image("icone_solutions_8")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .padding(.trailing, 8)
+                  
+                Button(action: {
+                  //  connectToSocket()
+                       
+                })
+
+                {
+                    Image("icone_solutions_8")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .padding(.trailing, 8)
+                      
+                }
+
+
+
             }
             .padding(.bottom, 16)
+          
         }
+        .onAppear {
+                   connectToSocket()
+               }
+      
     }
+        
 }
+
 
 struct CircleImageView: View {
     let image: Image
@@ -103,9 +179,12 @@ struct CustomShape: Shape {
 }
 
 
-
+struct RoomData: Codable {
+    let userName: String
+    let romeName: String
+}
 struct chats_Previews: PreviewProvider {
     static var previews: some View {
-        chats(romeName: "")
+        chats(romeName: "", userName: "")
     }
 }
