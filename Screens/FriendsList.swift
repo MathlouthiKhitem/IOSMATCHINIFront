@@ -453,7 +453,7 @@ func getUserId1(login : String , completion: @escaping (String?, Error?) -> Void
 struct ContactRow: View {
     
     @State private var navigationLinkIsActive = false
-    @State var romeName: String = ""
+    @State var roomName: String = ""
     let login: String
     @State var userName: String = ""
 
@@ -477,11 +477,13 @@ struct ContactRow: View {
                                     print("[[[[[[[el s7i7]]]]]]] " , data)
                                     getRomeName(user1: returnedid1! , user2: data.id) { name, error in
                                            if let name = name {
-                                               self.romeName = name
-                                               print ("namenamenamenamenamenamename",romeName)
+                                               self.roomName = name
+                                               print ("namenamenamenamenamenamename",roomName)
+                                               let defaults = UserDefaults.standard
+                                               defaults.set(roomName, forKey: "roomName")
                                              navigationLinkIsActive = true // Set navigation link active
                                            } else {
-                                               self.romeName = "Error: \(error?.localizedDescription ?? "Unknown error")"
+                                               self.roomName = "Error: \(error?.localizedDescription ?? "Unknown error")"
                                            }
                                        }}
                                
@@ -512,7 +514,7 @@ struct ContactRow: View {
                     }
                 }.padding(.horizontal , -170)
             }
-        }.background(NavigationLink(destination: chats(webSocketManager:WebSocketManager( socketURL: URL(string: "ws://127.0.0.1:3000")!), userName:userName, roomName:romeName), isActive: $navigationLinkIsActive) { EmptyView() })
+        }.background(NavigationLink(destination: chats(webSocketManager:WebSocketManager( socketURL: URL(string: "ws://127.0.0.1:3000")!), userName:userName, roomName:roomName), isActive: $navigationLinkIsActive) { EmptyView() })
            
         }
     }
