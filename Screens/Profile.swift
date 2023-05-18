@@ -96,6 +96,9 @@ struct Profile1: View {
                         self.isProfileViewActive = true
                         let defaults = UserDefaults.standard
                         defaults.removeObject(forKey: "login")
+                        defaults.removeObject(forKey: "id1")
+                        defaults.removeObject(forKey: "id2")
+                        defaults.removeObject(forKey: "paid")
                         NavigationLink(destination: matchinii.login(), isActive: $navigationSelection) { EmptyView()
 
                         }

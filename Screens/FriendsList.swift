@@ -455,6 +455,7 @@ struct ContactRow: View {
     @State private var navigationLinkIsActive = false
     @State var romeName: String = ""
     let login: String
+    @State var userName: String = ""
 
     let data: Friend
     var body: some View {
@@ -485,6 +486,7 @@ struct ContactRow: View {
                                        }}
                                
                             }
+                         userName=login
                     navigationLinkIsActive = true
                     }) {
                         URLImage(URL(string: data.Image)!) { image in
@@ -510,7 +512,7 @@ struct ContactRow: View {
                     }
                 }.padding(.horizontal , -170)
             }
-        }.background(NavigationLink(destination: chats( romeName:romeName, userName:"khitem"), isActive: $navigationLinkIsActive) { EmptyView() })
+        }.background(NavigationLink(destination: chats(webSocketManager:WebSocketManager( socketURL: URL(string: "ws://127.0.0.1:3000")!), userName:userName, roomName:romeName), isActive: $navigationLinkIsActive) { EmptyView() })
            
         }
     }

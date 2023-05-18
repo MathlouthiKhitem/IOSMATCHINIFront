@@ -367,6 +367,10 @@ struct CardView : View {
                                             if let id2 = id2 {
 
                                                 home.matches(id1:id  , id2:id2  )
+                                                let defaults = UserDefaults.standard
+                                                defaults.set(id, forKey: "id1")
+                                                defaults.set(id2, forKey: "id2")
+                                                
                                             }
                                         }
                                     }
