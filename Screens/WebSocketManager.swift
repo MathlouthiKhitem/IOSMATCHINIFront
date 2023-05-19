@@ -322,6 +322,7 @@ class WebSocketManager {
     var onUserJoined: ((String) -> Void)?
 
     var onUserLeft: ((String) -> Void)?
+    var list: [Message] = []
 
     
 
@@ -423,7 +424,70 @@ class WebSocketManager {
 
     }
     
+    
+          func showMessage(roomName: String) {
+              guard let url = URL(string: "http://127.0.0.1:3000/Message/showmessage") else {
+                  print("Invalid URL")
+                  return
+              }
+              
+              var request = URLRequest(url: url)
+              request.httpMethod = "POST"
+              request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+              
+              let parameters: [String: Any] = [
+                  "RommeName": roomName
+              ]
+              request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+              
+              let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                  if let error = error {
+                      print("Error: \(error)")
+                      return
+                  }
+                  
+                  guard let data = data else {
+                      print("No data received")
+                      return
+                  }
+                  
+                  do {
+                      let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
+                      
+                     
+                      for (index, json) in (jsonArray ?? []).enumerated() {
+                          if let key = json["key"] as? String,
+                             let value = json["value"] as? String {
+                              let message = Message(key: key, value: value)
+                              self.list.append(message)
+                              
+                              if    (self.list[index].key == "user1") {
+                                  let  msg = self.list[index].value
+                                  print("00000000",msg)
+                                  let defaults = UserDefaults.standard
+                                  defaults.set(msg, forKey: "msg")
+                             
 
+                              }
+                              else{
+                                  let  msgy = self.list[index].value
+                                  let defaults = UserDefaults.standard
+                                  defaults.set(msgy, forKey: "msgy")
+                             
+
+                              }
+                          }
+                      }
+
+                      
+                      // Handle the list of messages (list) here
+                  } catch {
+                      print("Error parsing JSON: \(error)")
+                  }
+              }
+              
+              task.resume()
+          }
     func addMessage(user1Param1: String, roomName: String, messageUser1: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let defaults = UserDefaults.standard
         let url = URL(string: "http://127.0.0.1:3000/Message/addmessage/\(user1Param1)/\(roomName)")!
@@ -536,7 +600,19 @@ class WebSocketManager {
             }
 
         }
+        
+  
 
     }
 
 }
+struct Message: Codable {
+    let key: String
+    let value: String
+}
+
+
+
+
+
+

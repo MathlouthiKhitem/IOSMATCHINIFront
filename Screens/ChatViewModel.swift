@@ -229,7 +229,9 @@ class ChatViewModel: ObservableObject {
 
     }
 
-
+    func showmessage(roomName: String){
+        webSocketManager.showMessage(roomName: roomName)
+    }
 
 
 }

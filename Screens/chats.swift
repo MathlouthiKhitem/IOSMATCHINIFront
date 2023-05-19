@@ -128,20 +128,30 @@ struct chats: View {
 
         let roomName: String ;
     let userName: String ;
-
+    let defaults = UserDefaults.standard
+   
 //    @State private var roomName: String = ""
 //        @State private var userName: String = ""
+   
+    
 
     init(webSocketManager: WebSocketManager, userName: String, roomName: String) {
 
         _viewModel = StateObject(wrappedValue: ChatViewModel(webSocketManager: webSocketManager, roomName: roomName, userName: userName))
         self.roomName = roomName
         self.userName = userName
+      
         
 
     }
 
-
+    func retrieveTestValue() {
+        let defaults = UserDefaults.standard
+        let test = defaults.object(forKey: "msg")
+        // Use the 'test' value as needed
+        print(test)
+        
+    }
 
     var body: some View {
        
@@ -160,9 +170,10 @@ struct chats: View {
                     HStack {
 
                         if chatMessage.isCurrentUser {
-
                             Spacer()
-
+//                            if let msg = defaults.object(forKey: "msg") as? String {
+//                                Text(msg)
+//                            }
                             Text(chatMessage.message)
 
                                 .padding()
@@ -174,7 +185,7 @@ struct chats: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
                         } else {
-
+                     
                             Text(chatMessage.message)
 
                                 .padding()
@@ -226,11 +237,14 @@ struct chats: View {
         }
 
         .onAppear {
+            
             print("jjj",roomName)
             print("roomNameroomNameroomNameroomName",roomName)
             let defaults = UserDefaults.standard
             let roomNameint = defaults.object(forKey: "roomName")
             viewModel.subscribe(roomName: roomNameint as! String, userName: userName)
+            let test =  viewModel.showmessage(roomName: roomNameint as! String)
+          //  retrieveTestValue() ;
 
         }
 
