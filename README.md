@@ -63,13 +63,7 @@ steps:
 
 YOUR APP SHOULD FUNCTION CORRECTLY
 
-## Features
 
-- Access to thousands of Tunisian's radio stations 
-- A modern and intuitive user interface
-- play your saved & hosted favorite songs
-- Access to Tunsians's radios web posts and interact withem within the app ( like and comment)
-- Access to your favorite posts
 
 
 
