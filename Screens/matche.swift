@@ -26,8 +26,8 @@ struct Home : View {
     @State private var isLiked = false
     @State private var isGestureEnabled = true
     @State private var isActive: Bool = false
-
-
+    @State var selectedDate = Calendar.current.date(from: DateComponents(year: 2022, month: 1, day: 1)) ?? Date()
+    let notify = NotificationHandler()
     @State var x : CGFloat = 0
     @State var idDict : Int = 0
     @State var FirstNameDict : String = ""
@@ -321,7 +321,8 @@ struct Home : View {
 }
 
 struct CardView : View {
-   
+    let notify = NotificationHandler()
+    @State var selectedDate = Calendar.current.date(from: DateComponents(year: 2022, month: 1, day: 19)) ?? Date()
     @Binding var home: Home
     @State private var isLiked = false
     @State private var isShowingHeart = false
@@ -354,7 +355,24 @@ struct CardView : View {
                                    )
                   
                     .onTapGesture(count: 2) {
-                      
+                        notify.askPermission()
+                        notify.sendNotification(
+                                           date: selectedDate,
+                                           type: "time",
+                                           timeInterval: 5,
+                                           title: "5 second notification",
+                                           body: "You can write more in here!")
+                        notify.sendNotification(
+                                      date:selectedDate,
+                                      type: "date",
+                                      title: "Date based notification",
+                                      body: "This notification is a reminder that you added a date. Tap on the notification to see more.")
+                              
+                
+                
+                
+                
+                
                         print(">>>>>>>>>" , currentIndex)
                         home.getUsers { loginUser2 in
                             if let loginUser2 = loginUser2 {

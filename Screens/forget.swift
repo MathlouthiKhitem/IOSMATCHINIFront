@@ -148,7 +148,9 @@ struct forget: View {
 
 struct ModalView: View {
   
-    
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+       @State private var showAlert = false
     
     @Binding var code: String
     @Binding var isShowingModal: Bool
@@ -239,7 +241,13 @@ struct ModalView: View {
                                isButton1Visible = true
                                isButton2Visible = false
                     resetPassword(login: login, password: password)
-                    
+                    DispatchQueue.main.async {
+
+                                                           presentationMode.wrappedValue.dismiss()
+
+                                                       }
+
+                                        showAlert = true
                            } .foregroundColor(.white)
                     .frame(width: 300, height: 50)
                     .background(Color(red: 0.94, green: 0.393, blue: 0.408))
@@ -247,7 +255,24 @@ struct ModalView: View {
                     .padding(.top,50)
                     .padding()
                        }
-        }
+        }.alert(isPresented: $showAlert) {
+        Alert(
+            
+            title: Text("Success"),
+
+            message: Text("Password reseted successfully"),
+
+            dismissButton: .default(Text("OK")) {
+
+                // Dismiss the current view and go back to the previous view
+
+                presentationMode.wrappedValue.dismiss()
+
+            }
+
+        )
+
+    }
     }
 }
 
