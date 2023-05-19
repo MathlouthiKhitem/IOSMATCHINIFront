@@ -422,6 +422,7 @@ class WebSocketManager {
         }
 
     }
+    
 
     func addMessage(user1Param1: String, roomName: String, messageUser1: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let defaults = UserDefaults.standard

@@ -22,6 +22,8 @@ struct Profile: View {
 }
 
 struct Profile1: View {
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
+
     @State private var isProfileViewActive = false
     @State private var isProfileViewActive1 = false
     @State private var userImageURL: URL?
@@ -71,8 +73,8 @@ struct Profile1: View {
                     Button(action: {
                         // Code for button action
                     }) {
-                        Image(systemName: "gearshape")
-                        Text("Setting")
+                        Toggle("Dark Mode", isOn: $isDarkModeEnabled)
+                            
                     }
                     Button(action: {
                         self.isProfileViewActive1 = true
@@ -124,10 +126,11 @@ struct Profile1: View {
                 }
             } .accentColor(Color.red)
                 .background(Color.red)
+               
             
                 
                 
-        }
+        } .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
     }
 
     func fetchData() {
