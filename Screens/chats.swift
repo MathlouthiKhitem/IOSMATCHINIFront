@@ -242,8 +242,8 @@ struct chats: View {
             print("roomNameroomNameroomNameroomName",roomName)
             let defaults = UserDefaults.standard
             let roomNameint = defaults.object(forKey: "roomName")
-            viewModel.subscribe(roomName: roomNameint as! String, userName: userName)
-            let test =  viewModel.showmessage(roomName: roomNameint as! String)
+            viewModel.subscribe(roomName: roomName as! String, userName: userName)
+            let test =  viewModel.showmessage(roomName: roomName as! String)
           //  retrieveTestValue() ;
 
         }

@@ -328,7 +328,7 @@ struct FriendsList: View {
                             Spacer()
                             ForEach(data1) { friend in
                         
-                                          YourMatchesRow(login: login, data1: friend)
+                                TOPMatchesRow(login: login, data2: friend)
 
                                      
                                   }                            .listStyle(PlainListStyle())
@@ -480,7 +480,7 @@ struct ContactRow: View {
                                                self.roomName = name
                                                print ("namenamenamenamenamenamename",roomName)
                                                let defaults = UserDefaults.standard
-                                               defaults.set(roomName, forKey: "roomName")
+                                               defaults.set(roomName, forKey: "roomNamee")
                                              navigationLinkIsActive = true // Set navigation link active
                                            } else {
                                                self.roomName = "Error: \(error?.localizedDescription ?? "Unknown error")"

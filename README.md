@@ -1,6 +1,6 @@
 sc# MATCHINI IOS Version
 
-RadioFY IOS is a tunsian's meeting app that gives you the opportunity to meet now people and talk with them, match with other people with same interest and many other stuff....
+Matchini IOS is a tunsian's meeting app that gives you the opportunity to meet now people and talk with them, match with other people with same interest and many other stuff....
 
 
 
